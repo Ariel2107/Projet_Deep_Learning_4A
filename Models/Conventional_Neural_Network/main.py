@@ -1,19 +1,10 @@
 import os
-import cv2
 import numpy as np
-import requests
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-import sys
-import datetime
-# from tensorflow.keras.models import Model
-from tensorflow import keras
 import tensorflow as tf
 import pathlib
 from PIL import Image
 from time import time
 from tensorflow.python.keras.callbacks import TensorBoard
-from keras.preprocessing import image
 
 # Definition du sizing des images
 IMG_HEIGHT = 200
