@@ -19,7 +19,7 @@ def cleanText(sentence, ps, stopwords):
     sentence = ' '.join(sentence)
     return sentence
 
-def main() :
+def cleanData():
     ################################## PATHS ##################################
 
     # Train dataset from Kaggle
@@ -46,3 +46,7 @@ def main() :
         print('Saving cleaned dataset at %s' %zip_path)
         with mgzip.open(zip_path, 'wb') as f:
             pickle.dump(reviews_df, f)
+
+
+def main():
+    cleanData()
