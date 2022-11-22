@@ -1,8 +1,3 @@
 Kaggle/data/goodreads_train.csv
 Kaggle/data/goodreads_test.csv
-.idea/inspectionProfiles/profiles_settings.xml
-.idea/inspectionProfiles/Project_Default.xml
-.idea/misc.xml
-.idea/modules.xml
-.idea/Projet_Deep_Learning_4A.iml
-.idea/vcs.xml
+.idea/
