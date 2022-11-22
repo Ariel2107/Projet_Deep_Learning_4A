@@ -1,5 +1,5 @@
 import re
-import nltk #Natural Language Toolkit
+import nltk  # Natural Language Toolkit
 import mgzip
 import pickle
 import string
@@ -7,15 +7,15 @@ import contractions
 import pandas as pd
 
 from tqdm import tqdm
-
 from os.path import exists
-
 from nltk.corpus import stopwords
 from nltk.stem.snowball import SnowballStemmer
 
-################################## CONSTANTS ##################################
 
-PUNCT_TO_REMOVE = string.punctuation
+# ################################# CONSTANTS ##################################
+
+
+PUNC_TO_REMOVE = string.punctuation
 LANG = 'english'
 SS = SnowballStemmer(language=LANG)
 
@@ -23,23 +23,25 @@ SS = SnowballStemmer(language=LANG)
 DS_PATH = './Kaggle/data/goodreads_train.csv'
 
 # Path to save the dataset with the reviews already cleaned
-ZIP_PATH = './Kaggle/data/cleaned_ds.gz'
-    
-################################## METHODS ##################################
+ZIP_PATH = './Kaggle/data/cleanedReviews.gz'
 
-def cleanText(sentence, stopwords):
+
+# ################################# METHODS ##################################
+
+
+def clean_text(sentence, all_stopwords):
     # Lowercase the sentence
     sentence = sentence.lower()
-    
+
     # Remove links
-    sentence =  re.sub(r"(\w+:\/\/\S+)|^rt|http.+?", "", sentence)
-    
-    # Remove ponctuation
-    sentence = sentence.translate(str.maketrans('', '', PUNCT_TO_REMOVE))
-    
+    sentence = re.sub(r"(\w+://\S+)|^rt|http.+?", "", sentence)
+
+    # Remove punctuation
+    sentence = sentence.translate(str.maketrans('', '', PUNC_TO_REMOVE))
+
     # Remove numbers
     sentence = ''.join([char for char in sentence if not char.isdigit()])
-    
+
     # Remove emojis and emoticons
     emoji_pattern = re.compile("["
                                u"\U0001F600-\U0001F64F"  # emoticons
@@ -62,34 +64,37 @@ def cleanText(sentence, stopwords):
                                u"\u3030"
                                "]+", flags=re.UNICODE)
     sentence = emoji_pattern.sub(r'', sentence)
-    
+
     # Remove contractions
     sentence = contractions.fix(sentence)
-    
+
     # Stemming and remove stopwords and extra spaces
     sentence = sentence.split()
-    sentence = [SS.stem(word) for word in sentence if not word in stopwords]
+    sentence = [SS.stem(word) for word in sentence if word not in all_stopwords]
     sentence = ' '.join(sentence)
-    
+
     return sentence
 
-def cleanData():
+
+def clean_data():
     if exists(ZIP_PATH):
-        print('Dataset already cleaned, saved at %s' %ZIP_PATH)
+        print('Dataset already cleaned, saved at %s' % ZIP_PATH)
     else:
         print('Opening original dataset')
         reviews_df = pd.read_csv(DS_PATH)
-        print('Cleaning rewiews')
-        
+        print('Cleaning reviews')
+
         nltk.download('stopwords')
         all_stopwords = stopwords.words(LANG)
         all_stopwords.remove('not')
         tqdm.pandas()
-        
-        reviews_df['cleaned_review_text'] = reviews_df['review_text'].progress_map(lambda x : cleanText(x, all_stopwords))
-        print('Saving cleaned dataset at %s' %ZIP_PATH)
+
+        reviews_df['cleaned_review_text'] = reviews_df['review_text'] \
+            .progress_map(lambda x: clean_text(x, all_stopwords))
+        print('Saving cleaned dataset at %s' % ZIP_PATH)
         with mgzip.open(ZIP_PATH, 'wb') as f:
             pickle.dump(reviews_df, f)
 
+
 def main():
-    cleanData()
+    clean_data()
