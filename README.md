@@ -20,3 +20,10 @@ poetry add library-name
 ```python
 poetry show
 ```
+
+## Scripts
+
+clean_df
+```python
+poetry run clean_df
+```
