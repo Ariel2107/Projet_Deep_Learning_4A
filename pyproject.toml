@@ -8,7 +8,7 @@ repository = "https://github.com/Ariel2107/Projet_Deep_Learning_4A"
 packages = [{include = "Kaggle"}]
 
 [tool.poetry.dependencies]
-python = "3.10.7"
+python = "3.10.7 || 3.9.13 || 3.10.1"
 pandas = "^1.5.1"
 matplotlib = "^3.6.2"
 scikit-learn = "^1.1.3"
