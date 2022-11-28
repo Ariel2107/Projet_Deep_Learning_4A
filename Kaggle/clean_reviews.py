@@ -76,7 +76,18 @@ def clean_text(sentence, all_stopwords):
     return sentence
 
 
-def clean_data():
+def clean_data(column):
+    nltk.download('stopwords')
+    all_stopwords = stopwords.words(LANG)
+    all_stopwords.remove('not')
+    tqdm.pandas()
+
+    new_column = column.progress_map(lambda x: clean_text(x, all_stopwords))
+
+    return new_column
+
+
+def main():
     if exists(ZIP_PATH):
         print('Dataset already cleaned, saved at %s' % ZIP_PATH)
     else:
@@ -84,17 +95,8 @@ def clean_data():
         reviews_df = pd.read_csv(DS_PATH)
         print('Cleaning reviews')
 
-        nltk.download('stopwords')
-        all_stopwords = stopwords.words(LANG)
-        all_stopwords.remove('not')
-        tqdm.pandas()
+        reviews_df['cleaned_review_text'] = clean_data(reviews_df['review_text'])
 
-        reviews_df['cleaned_review_text'] = reviews_df['review_text'] \
-            .progress_map(lambda x: clean_text(x, all_stopwords))
-        print('Saving cleaned dataset at %s' % ZIP_PATH)
-        with mgzip.open(ZIP_PATH, 'wb') as f:
-            pickle.dump(reviews_df, f)
-
-
-def main():
-    clean_data()
+    print('Saving cleaned dataset at %s' % ZIP_PATH)
+    with mgzip.open(ZIP_PATH, 'wb') as f:
+        pickle.dump(reviews_df, f)

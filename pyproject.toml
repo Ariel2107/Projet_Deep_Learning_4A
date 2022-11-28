@@ -18,6 +18,9 @@ tensorflow = "^2.10.0"
 nltk = "^3.7"
 mgzip = "^0.2.1"
 contractions = "^0.1.73"
+notebook = "^6.5.2"
+jupyter = "^1.0.0"
+textblob = "^0.17.1"
 
 [build-system]
 requires = ["poetry-core"]
